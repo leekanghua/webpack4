@@ -14,8 +14,66 @@ const devConfig = {
     // }
     // hotOnly: true
   },
-  optimization: {
-    usedExports: true
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: { 
+              importLoaders:1   // 保证@import语法引入的css文件也执行 postcss-loader 这个loader 
+            }
+          }, 
+          'postcss-loader']
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders:2,
+              // modules:true
+            }
+          },
+          'postcss-loader',
+          'sass-loader'
+        ]
+      },
+      {
+        test: /\.less$/,
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders:2,
+              // modules:true
+            }
+          },
+          'postcss-loader',
+          'less-loader'
+        ]
+      },
+      {
+        test: /\.styl$/,
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders:2,
+              // modules:true
+            }
+          },
+          'postcss-loader',
+          'stylus-loader'
+        ]
+      }
+    ]
   },
   plugins: [ 
     new webpack.HotModuleReplacementPlugin()

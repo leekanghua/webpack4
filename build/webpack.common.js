@@ -1,6 +1,7 @@
 const path = require('path')
 const HtmlWebpackPligin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+// const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 
 module.exports = {
   entry: {
@@ -30,8 +31,7 @@ module.exports = {
       },
       {
         test: /\.(eot|woff2?|ttf|svg)$/,
-        use:[
-          {
+        use: {
             loader: 'url-loader',
             options: {
               limit:5000,
@@ -39,78 +39,66 @@ module.exports = {
               outputPath: 'iconfont'
             }
           }
-        ]
-      },
-      {
-        test: /\.css$/,
-        use: [
-          'style-loader',
-          {
-            loader: 'css-loader',
-            options: { 
-              importLoaders:1   // 保证@import语法引入的css文件也执行 postcss-loader 这个loader 
-            }
-          }, 
-          'postcss-loader']
-      },
-      {
-        test: /\.scss$/,
-        use: [
-          'style-loader',
-          {
-            loader: 'css-loader',
-            options: {
-              importLoaders:2,
-              // modules:true
-            }
-          },
-          'postcss-loader',
-          'sass-loader'
-        ]
-      },
-      {
-        test: /\.less$/,
-        use: [
-          'style-loader',
-          {
-            loader: 'css-loader',
-            options: {
-              importLoaders:2,
-              // modules:true
-            }
-          },
-          'postcss-loader',
-          'less-loader'
-        ]
-      },
-      {
-        test: /\.styl$/,
-        use: [
-          'style-loader',
-          {
-            loader: 'css-loader',
-            options: {
-              importLoaders:2,
-              // modules:true
-            }
-          },
-          'postcss-loader',
-          'stylus-loader'
-        ]
       }
     ]
   },
+  // optimization: {
+  //   splitChunks: {
+  //     chunks: 'all',   
+  //     minSize: 30000
+  //   }
+  // },
   optimization: {
+    usedExports: true,
     splitChunks: {
-      chunks: 'all',   //initial 同步代码  async 异步代码
-      minSize: 30000
+      // chunks: one of (all, async, initial)
+      // all means chunks can be shared even between async and non-async chunks
+      chunks: 'all',  
+
+      // minSize: Minimum size, in bytes, for a chunk to be generated.
+      minSize: 30000,
+
+      // minRemainingSize: 0,    webpack5.0.0 API
+      
+      // 进行二次分割
+      maxSize: 0,
+
+      // minChunks: Minimum number of chunks that must share a module before splitting.
+      minChunks: 1,
+
+      // maxAsyncRequests:  Maximum number of parallel requests when on-demand loading.
+      maxAsyncRequests: 6,
+
+      // maxInitialRequests: Maximum number of parallel requests at an entry point.
+      maxInitialRequests: 4,
+       
+      // This option lets you specify the delimiter to use for the generated names. 
+      // (e.g. vendors~main.js).
+      automaticNameDelimiter: '~', 
+
+      cacheGroups: {
+        defaultVendors: {
+          test: /[\\/]node_modules[\\/]/,
+          priority: -10
+        },
+        default: {
+          minChunks: 2,
+          priority: -20,
+
+          // If the current chunk contains modules already split out from the main bundle, 
+          // it will be reused instead of a new one being generated.
+          // This can impact the resulting file name of the chunk.
+          reuseExistingChunk: true
+        }
+      }
     }
   },
   plugins: [ 
     new HtmlWebpackPligin({
       template: 'src/index.html',
-      favicon: path.resolve('favicon.ico') 
+      // favicon: path.resolve('favicon.ico') 
     }),
-    new CleanWebpackPlugin()
+    new CleanWebpackPlugin(),
+    // new BundleAnalyzerPlugin()
   ]
 }
