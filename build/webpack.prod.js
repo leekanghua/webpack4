@@ -1,6 +1,7 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin')
-const WorkboxWebpackPlugin = require('workbox-webpack-plugin')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+// const WorkboxWebpackPlugin = require('workbox-webpack-plugin')
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 
 const merge = require('webpack-merge')
@@ -72,8 +73,13 @@ const prodConfig = {
     ]
   },
   optimization: {
+    minimize: true,
     minimizer: [
-      new OptimizeCssAssetsWebpackPlugin()
+      new OptimizeCssAssetsWebpackPlugin(),
+      new UglifyJsPlugin({
+        parallel: true,
+        // sourceMap: true
+      }),
     ]
   },
   plugins: [
@@ -81,10 +87,10 @@ const prodConfig = {
       filename: '[name].css'
     }),
     // 配置pwa
-    new WorkboxWebpackPlugin.GenerateSW({
-      clientsClaim: true,
-      skipWaiting: true
-    }),
+    // new WorkboxWebpackPlugin.GenerateSW({
+    //   clientsClaim: true,
+    //   skipWaiting: true
+    // }),
     new BundleAnalyzerPlugin()
   ],
   output: {
