@@ -1,18 +1,20 @@
-const merge = require('webpack-merge')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin')
 const WorkboxWebpackPlugin = require('workbox-webpack-plugin')
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+
+const merge = require('webpack-merge')
 const commonConfig = require('./webpack.common')
 
 const prodConfig = {
   mode: 'production',
-  devtool: 'cheap-module-source-map',
+  // devtool: 'cheap-module-source-map',
+  devtool: false,
   module: {
     rules: [
       {
         test: /\.css$/,
         use: [
-          // 'style-loader',
           MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
@@ -25,7 +27,6 @@ const prodConfig = {
       {
         test: /\.scss$/,
         use: [
-          // 'style-loader',
           MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
@@ -41,7 +42,6 @@ const prodConfig = {
       {
         test: /\.less$/,
         use: [
-          // 'style-loader',
           MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
@@ -57,7 +57,6 @@ const prodConfig = {
       {
         test: /\.styl$/,
         use: [
-          // 'style-loader',
           MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
@@ -81,13 +80,16 @@ const prodConfig = {
     new MiniCssExtractPlugin({
       filename: '[name].css'
     }),
+    // 配置pwa
     new WorkboxWebpackPlugin.GenerateSW({
       clientsClaim: true,
       skipWaiting: true
-    })
+    }),
+    new BundleAnalyzerPlugin()
   ],
   output: {
-    filename: '[name].[contenthash].js'
+    filename: '[name].[contenthash].js',
+    chunkFilename: '[name].[contenthash].js'
   }
 }
 

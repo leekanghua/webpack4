@@ -1,7 +1,7 @@
 const path = require('path')
 const HtmlWebpackPligin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
-// const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+
 
 module.exports = {
   entry: {
@@ -94,10 +94,9 @@ module.exports = {
   },
   plugins: [ 
     new HtmlWebpackPligin({
-      template: 'src/index.html',
-      // favicon: path.resolve('favicon.ico') 
+      template: 'public/index.html',
+      favicon: 'public/favicon.ico'
     }),
     new CleanWebpackPlugin(),
-    // new BundleAnalyzerPlugin()
   ]
 }
